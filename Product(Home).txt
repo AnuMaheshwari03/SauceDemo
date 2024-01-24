@@ -1,0 +1,49 @@
+package SauceDemoTestScript;
+
+import org.testng.Assert;
+import org.testng.annotations.Test;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.AfterMethod;
+import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.chrome.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+
+public class Product {
+	WebDriver driver;
+
+	@BeforeMethod
+	public void launchWebsite() {
+
+		WebDriverManager.chromedriver().setup();
+		driver = new ChromeDriver();
+		driver.get("https://www.saucedemo.com/");
+		driver.manage().window().maximize();
+		driver.findElement(By.id("user-name")).sendKeys("standard_user");
+		driver.findElement(By.id("password")).sendKeys("secret_sauce");
+		driver.findElement(By.id("login-button")).click();
+
+	}
+
+	@Test
+	public void Product_testcase_001() // Product testcase for check the shoppingBucket No as well as add to cart
+										// buttons
+	{
+
+		driver.findElement(By.id("add-to-cart-sauce-labs-backpack")).click();
+		driver.findElement(By.id("add-to-cart-sauce-labs-bike-light")).click();
+		driver.findElement(By.id("add-to-cart-sauce-labs-bolt-t-shirt")).click();
+		driver.findElement(By.id("add-to-cart-sauce-labs-fleece-jacket")).click();
+		String actualResult = driver.findElement(By.xpath("//span[@class='shopping_cart_badge'][1]")).getText();
+		String expectedResult = "4";
+		Assert.assertEquals(actualResult, expectedResult); // for validation of succesfull Login
+	}
+
+	
+
+	@AfterMethod
+	public void closeWebSite() {
+		driver.close();
+	}
+
+}

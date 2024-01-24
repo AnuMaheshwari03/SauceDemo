@@ -1,0 +1,67 @@
+package SauceDemoTestScript;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+
+public class HumburgerMenu {
+	WebDriver driver;
+
+	@BeforeMethod
+	public void launchWebsite() throws InterruptedException {
+
+		WebDriverManager.chromedriver().setup();
+		driver = new ChromeDriver();
+		driver.get("https://www.saucedemo.com/");
+		driver.manage().window().maximize();
+		driver.findElement(By.id("user-name")).sendKeys("standard_user");
+		driver.findElement(By.id("password")).sendKeys("secret_sauce");
+		driver.findElement(By.id("login-button")).click();
+		Thread.sleep(1000);
+		driver.findElement(By.id("react-burger-menu-btn")).click();
+
+	}
+
+	@Test
+	public void HumBurgerMenu_Allitem() throws InterruptedException {
+		Thread.sleep(1000);
+		driver.findElement(By.id("inventory_sidebar_link")).click();
+		Thread.sleep(1000);
+		String actualResult = driver.findElement(By.xpath("//span[@class='title'][1]")).getText();
+		String expectedResult = "Products";
+		Assert.assertEquals(actualResult, expectedResult);
+	}
+
+	@Test
+	public void HumburgerMenu_about() throws InterruptedException {
+		driver.findElement(By.id("about_sidebar_link")).click();
+		Thread.sleep(1000);
+		String actualResult1 = driver.findElement(By.xpath("//div[@class='MuiBox-root css-1gx7010'][2]")).getText();
+		String expectedResult1 = "Request a demo";
+		Assert.assertEquals(actualResult1, expectedResult1); // for validation of succesfull Login
+
+	}
+
+	@Test
+	public void HumburgerMenu_LogOut() throws InterruptedException {
+		driver.findElement(By.id("logout_sidebar_link")).click();
+		Thread.sleep(1000);
+		String actualResult = driver.findElement(By.id("login-button")).getText();
+		String expectedResult = "Login";
+		Thread.sleep(1500);
+		Assert.assertEquals(actualResult, expectedResult);
+	}
+
+	@AfterMethod
+	public void closeWebSite() 
+	{
+		driver.close();
+	}
+
+}
